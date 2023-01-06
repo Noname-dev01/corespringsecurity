@@ -19,9 +19,22 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.springframework.boot:spring-boot-devtools'
+    //매핑을 도와주는 라이브러리
+    implementation 'org.modelmapper:modelmapper'
+    //postgresql
+    implementation 'org.postgresql:postgresql'
+    //Thymeleaf에서 Spring-Security의 문법이나 형식을 지원하는 확장팩 라이브러리
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    //JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    //Thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    //Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    //Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
