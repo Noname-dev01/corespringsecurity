@@ -22,7 +22,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-devtools'
     //매핑을 도와주는 라이브러리
-    implementation 'org.modelmapper:modelmapper'
+    implementation 'org.modelmapper:modelmapper:3.1.1'
     //postgresql
     implementation 'org.postgresql:postgresql'
     //Thymeleaf에서 Spring-Security의 문법이나 형식을 지원하는 확장팩 라이브러리
