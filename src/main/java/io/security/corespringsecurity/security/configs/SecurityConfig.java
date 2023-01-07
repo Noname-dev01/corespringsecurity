@@ -3,7 +3,9 @@ package io.security.corespringsecurity.security.configs;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -22,31 +24,31 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
 
-    @Bean
-    public UserDetailsManager users() throws Exception {
-
-        String password = passwordEncoder().encode("1111");
-
-        UserDetails user = User.builder()
-                .username("user")
-                .password(password)
-                .roles("USER")
-                .build();
-
-        UserDetails manager = User.builder()
-                .username("manager")
-                .password(password)
-                .roles("MANAGER","USER")
-                .build();
-
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(password)
-                .roles("ADMIN","USER","MANAGER")
-                .build();
-
-        return new InMemoryUserDetailsManager(user,manager,admin);
-    }
+//    @Bean
+//    public UserDetailsManager users() throws Exception {
+//
+//        String password = passwordEncoder().encode("1111");
+//
+//        UserDetails user = User.builder()
+//                .username("user")
+//                .password(password)
+//                .roles("USER")
+//                .build();
+//
+//        UserDetails manager = User.builder()
+//                .username("manager")
+//                .password(password)
+//                .roles("MANAGER","USER")
+//                .build();
+//
+//        UserDetails admin = User.builder()
+//                .username("admin")
+//                .password(password)
+//                .roles("ADMIN","USER","MANAGER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user,manager,admin);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -60,11 +62,11 @@ public class SecurityConfig {
             web.ignoring().antMatchers("/favicon.ico","/resources/**","/error");
         };
     }
-//
-//    @Bean
-//    AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration){
-//        return null;
-//    }
+
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
+        return authConfiguration.getAuthenticationManager();
+    }
 
 
     @Bean
