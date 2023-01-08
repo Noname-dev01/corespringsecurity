@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.RequestCac
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 //@EnableWebSecurity  //springboot를 쓸때는 자동 설정해줌
@@ -25,6 +26,8 @@ public class SecurityConfig {
 
     @Autowired
     private AuthenticationDetailsSource authenticationDetailsSource;
+    @Autowired
+    private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -78,6 +81,7 @@ public class SecurityConfig {
                 .loginProcessingUrl("/login_proc")
                 .defaultSuccessUrl("/")
                 .authenticationDetailsSource(authenticationDetailsSource)
+                .successHandler(customAuthenticationSuccessHandler)
                 .permitAll();
         return http.build();
     }
