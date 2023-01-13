@@ -8,24 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 @Configuration
-//@EnableWebSecurity  //springboot를 쓸때는 자동 설정해줌
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -34,6 +32,8 @@ public class SecurityConfig {
     private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
     @Autowired
     private AuthenticationFailureHandler customAuthenticationFailureHandler;
+    @Autowired
+    private  FilterSecurityInterceptor customFilterSecurityInterceptor;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -76,10 +76,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/","/users","user/login/**","/login*").permitAll()
                 .antMatchers("/mypage").hasRole("USER")
                 .antMatchers("/messages").hasRole("MANAGER")
-                .antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers("/config").hasRole("ADMIN")
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
         .and()
                 .formLogin()
@@ -92,7 +92,12 @@ public class SecurityConfig {
                 .permitAll()
         .and()
                 .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler());
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+                .accessDeniedPage("/denied")
+                .accessDeniedHandler(accessDeniedHandler())
+        .and()
+                .addFilterAt(customFilterSecurityInterceptor, FilterSecurityInterceptor.class);
+
         return http.build();
     }
 
